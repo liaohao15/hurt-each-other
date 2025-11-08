@@ -16,6 +16,10 @@ public class GM : MonoBehaviour
     public ActorController ac1;
     public ActorController ac2;
 
+    public Actorinteractive am1;
+    public Actorinteractive am2;
+
+
     [Space(10)]//Ìí¼Ó¼ä¸ô
     [Header("==  STATE GAME  ==")]
     public STATE state;
@@ -33,27 +37,45 @@ public class GM : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            if (state == STATE.IDLE)
-            {
-                state = STATE.PLAYERA;
-                ac1.anim.SetTrigger("attack");
-                ac2.anim.SetTrigger("hit");
 
-            }
-            else if (state == STATE.PLAYERA)
-            {
-                state = STATE.PLAYERB;
-            }
-            else if (state == STATE.PLAYERB)
+        if (state == STATE.IDLE)
+        {
+            if (ac1.data.HP <= 0 || ac2.data.HP <= 0)
             {
                 state = STATE.FINISHED;
             }
-            else if (state == STATE.FINISHED)
+
+
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                state = STATE.PLAYERA;
+                ac1.anim.SetTrigger("attack");
+                //ac2.data.AddHP(-1 * ac1.data.TAK);//Òªºô½ÐActorinteractive
+                am2.Dodamager(am1);
+
+            }
+        }
+        else if (state == STATE.PLAYERA)
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                state = STATE.PLAYERB;
+                ac2.anim.SetTrigger("attack");
+                //ac1.data.AddHP(-1 * ac2.data.TAK);
+                am1.Dodamager(am2);
+            }
+        }
+        else if (state == STATE.PLAYERB)
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
             {
                 state = STATE.IDLE;
             }
         }
+        else if (state == STATE.FINISHED)
+        {
+
+        }
+        
     }
 }
