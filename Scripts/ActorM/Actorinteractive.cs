@@ -5,8 +5,10 @@ using UnityEngine;
 public class Actorinteractive : MonoBehaviour
 {
     public ActorController ac;
-
-
+    public ActorDataController adc;
+    public weaponDataController wdc;
+    
+    private int LastTAKID = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -25,15 +27,22 @@ public class Actorinteractive : MonoBehaviour
 
     public void Dodamager(Actorinteractive attacker)//传入攻击者
     {
-        //print("Dodamager is called"+" "+attacker.name + "攻击了"+""+this.name);
-        this.ac.data.AddHP(  Mathf.Min(  (-1 * (attacker.ac.data.TAK - this.ac.data.DEF)),0   )  );
-        this.ac.anim.SetTrigger("hit");
-        CheckHP();
+
+        if (LastTAKID != attacker.wdc.ATKID)
+        {
+            //print("Dodamager is called"+" "+attacker.name + "攻击了"+""+this.name);
+            this.adc.data.AddHP(Mathf.Min((-1 * (attacker.adc.TAK() + attacker.wdc.TAK() - this.adc.DEF())), 0));
+            this.ac.anim.SetTrigger("hit");
+            CheckHP();
+            print("attacker.wdc.ATKID=" + attacker.wdc.ATKID);
+            LastTAKID = attacker.wdc.ATKID;
+        }
+        
     }
 
     public void CheckHP()
     {
-        if (this.ac.data.HP <= 0)
+        if (this.adc.HP() <= 0)//读取ActorDataController的血条
         {
             this.ac.anim.SetTrigger("death");
         }
